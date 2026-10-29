@@ -116,8 +116,7 @@ if (isset($_POST['new_folder']) && $current_dir == $base_dir) {
                                                             echo "</tr>";
                                                         }
                                                     }
-
-                                                    // Następnie wyświetlamy pliki z inteligentnym podglądem
+                                                    
                                                     foreach ($items as $item) {
                                                         $path = $current_dir . '/' . $item;
                                                         if (!is_dir($path)) {
