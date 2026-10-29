@@ -15,9 +15,15 @@ require_once 'db.php';
     <title>Rejestr wizyt i logowań</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Dodatkowy styl dla DataTables w wersji Bootstrap 5 -->
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="twoj_css.css?v=2">
+    
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Skrypty biblioteki DataTables -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 </head>
 <body>
 
@@ -32,13 +38,14 @@ require_once 'db.php';
             </div>
             <div class="card-body p-3">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover table-bordered align-middle" style="font-size: 0.85em;">
+                    <!-- Dodano ID "rejestrTabela", żeby skrypt wiedział, którą tabelę obsłużyć -->
+                    <table id="rejestrTabela" class="table table-striped table-hover table-bordered align-middle" style="font-size: 0.85em; width:100%">
                         <thead class="table-dark">
                             <tr>
                                 <th>Data</th>
                                 <th>IP / Host</th>
-                                <th>Użytkownik</th> <!-- Nowa kolumna -->
-                                <th>Status logowania</th> <!-- Nowa kolumna -->
+                                <th>Użytkownik</th>
+                                <th>Status logowania</th>
                                 <th>Geolokalizacja</th>
                                 <th>Ekran</th>
                                 <th>Okno</th>
@@ -96,8 +103,6 @@ require_once 'db.php';
                                     echo "<td><span class='text-uppercase'>{$row['language']}</span></td>";
                                     echo "</tr>";
                                 }
-                            } else {
-                                echo "<tr><td colspan='11' class='text-center text-muted'>Tabela jest pusta.</td></tr>";
                             }
                             ?>
                         </tbody>
@@ -109,6 +114,20 @@ require_once 'db.php';
 </main>
 
 <?php require_once 'footer.php'; ?>
+
+<!-- Uruchomienie filtrowania i stronnicowania tabeli -->
+<script>
+$(document).ready(function() {
+    $('#rejestrTabela').DataTable({
+        "pageLength": 10, // Wyświetla 10 wierszy na stronę
+        "order": [[ 0, "desc" ]], // Domyślnie sortuje po dacie malejąco
+        "language": {
+            // Polskie tłumaczenie interfejsu (szukaj, następna, poprzednia itp.)
+            "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/pl.json"
+        }
+    });
+});
+</script>
 
 </body>
 </html>
