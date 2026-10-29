@@ -106,23 +106,44 @@ if (isset($_POST['new_folder']) && $current_dir == $base_dir) {
                                                 $items = array_diff(scandir($current_dir), array('.', '..'));
                                                 if (count($items) > 0) {
                                                     
+                                                    // Najpierw wyświetlamy foldery
                                                     foreach ($items as $item) {
                                                         $path = $current_dir . '/' . $item;
                                                         if (is_dir($path)) {
                                                             echo "<tr>";
-                                                            echo "<td><a href='?dir={$item}' class='text-decoration-none text-warning fw-bold'>[Folder] {$item}</a></td>";
+                                                            echo "<td><a href='?dir={$item}' class='text-decoration-none text-warning fw-bold fs-5'>📁 {$item}</a></td>";
                                                             echo "<td class='text-end'><a href='usun.php?item={$item}&type=dir' class='btn btn-sm btn-danger' onclick=\"return confirm('Usunąć ten folder i całą jego zawartość?');\">Usuń</a></td>";
                                                             echo "</tr>";
                                                         }
                                                     }
 
+                                                    // Następnie wyświetlamy pliki z inteligentnym podglądem
                                                     foreach ($items as $item) {
                                                         $path = $current_dir . '/' . $item;
                                                         if (!is_dir($path)) {
+                                                            $ext = strtolower(pathinfo($item, PATHINFO_EXTENSION));
+                                                            
                                                             echo "<tr>";
-                                                            echo "<td><a href='{$path}' target='_blank' class='text-decoration-none text-info'>{$item}</a></td>";
+                                                            echo "<td class='py-3'>";
+                                                            echo "<div class='fw-bold text-info mb-2'>{$item}</div>";
+                                                            
+                                                            // Rozpoznawanie typów plików
+                                                            if (in_array($ext, ['mp3', 'wav'])) {
+                                                                echo "<audio controls src='{$path}' style='height: 40px; outline: none; width: 100%; max-width: 400px;'></audio>";
+                                                            } elseif (in_array($ext, ['mp4', 'webm'])) {
+                                                                echo "<video controls src='{$path}' style='max-height: 150px; max-width: 100%; border-radius: 8px;'></video>";
+                                                            } elseif (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                                                                echo "<a href='{$path}' target='_blank'><img src='{$path}' alt='{$item}' style='max-height: 90px; border-radius: 5px; object-fit: cover;'></a>";
+                                                            } elseif ($ext == 'pdf') {
+                                                                echo "<a href='{$path}' target='_blank' class='btn btn-sm btn-outline-info'>📄 Podgląd PDF</a>";
+                                                            } else {
+                                                                echo "<a href='{$path}' target='_blank' download class='btn btn-sm btn-outline-light'>⬇️ Pobierz plik</a>";
+                                                            }
+                                                            
+                                                            echo "</td>";
+                                                            
                                                             $link_dir = ($current_dir != $base_dir) ? "&subdir=".basename($current_dir) : "";
-                                                            echo "<td class='text-end'><a href='usun.php?item={$item}&type=file{$link_dir}' class='btn btn-sm btn-danger' onclick=\"return confirm('Na pewno usunąć ten plik?');\">Usuń</a></td>";
+                                                            echo "<td class='text-end align-middle'><a href='usun.php?item={$item}&type=file{$link_dir}' class='btn btn-sm btn-danger' onclick=\"return confirm('Na pewno usunąć ten plik?');\">Usuń</a></td>";
                                                             echo "</tr>";
                                                         }
                                                     }
